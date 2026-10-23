@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Child Support Worksheet</title>
+<style>
+/* ---------- Brand tokens (office brand package; Brass is provisional) ---------- */
+:root{
+  --night:#0A1020; --navy:#002047; --brass:#B08D57; --brass-dk:#7A5C2E;
+  --slate:#8A93A8; --parchment:#F4F1EA; --paper:#fff; --ink:#14181f;
+  --line:#d9d3c5; --err:#8a1c1c;
+  --serif:"Source Serif 4","Source Serif Pro",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--parchment);color:var(--ink);font:15px/1.45 var(--sans)}
+header.top{background:var(--navy);color:#fff;border-bottom:2px solid var(--brass);padding:14px 24px;display:flex;align-items:center;gap:16px}
+header.top svg{width:46px;height:46px;flex:none}
+header.top h1{font:600 22px/1.1 var(--serif);margin:0}
+header.top p{margin:2px 0 0;color:#c9cfdd;font-size:13px}
+main{display:grid;grid-template-columns:minmax(340px,430px) minmax(0,1fr);gap:24px;padding:20px 24px;align-items:start}
+@media (max-width:980px){main{grid-template-columns:minmax(0,1fr)}}
+main>section{min-width:0}
+.panel{background:var(--paper);border:1px solid var(--line);border-top:3px solid var(--navy);padding:16px 18px}
+.panel h2{font:600 16px var(--serif);color:var(--navy);margin:18px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+.panel h2:first-child{margin-top:0}
+label{display:block;font-size:12.5px;color:#3b4252;margin:8px 0 2px}
+input,select,textarea{width:100%;font:inherit;padding:7px 8px;border:1px solid #bdb6a5;background:#fff;border-radius:2px;color:var(--ink)}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--brass);outline-offset:1px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--navy)}
+.seg button{border:0;background:#fff;color:var(--navy);padding:10px 8px;font:600 14px var(--sans);cursor:pointer;text-align:left}
+.seg button small{display:block;font-weight:400;font-size:12px;color:#4a5160}
+.seg button[aria-pressed=true]{background:var(--navy);color:#fff}
+.seg button[aria-pressed=true] small{color:#d4d9e6}
+.child{display:grid;grid-template-columns:1fr 150px 34px;gap:8px;align-items:end;margin-top:6px}
+.btn{font:600 14px var(--sans);padding:9px 14px;border:1px solid var(--navy);background:var(--navy);color:#fff;cursor:pointer;border-radius:2px}
+.btn.alt{background:#fff;color:var(--navy)}
+.btn.x{padding:7px 0;width:34px}
+.btn.brass{background:var(--brass-dk);border-color:var(--brass-dk)}
+.actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.hint{font-size:12px;color:#5b6272;margin:3px 0 0}
+.notice{border-left:4px solid var(--brass);background:#fbf6ea;padding:9px 12px;margin:0 0 12px;font-size:13.5px}
+.notice.err{border-color:var(--err);background:#fbeeee;color:var(--err)}
+.stage{background:#e9e5d9;padding:16px;overflow:auto}
+.stage .scale{transform-origin:top left}
+/* ---------- The worksheet sheet: 8.5 x 14 in, Times New Roman, 1 in margins ---------- */
+.sheet{position:relative;width:8.5in;min-height:14in;background:#fff;color:#000;padding:.8in .5in .8in 1in;
+  font-family:"Times New Roman",Times,serif;box-shadow:0 1px 8px rgba(0,0,0,.25);margin:0 auto}
+.sheet .rule-l,.sheet .rule-r{position:absolute;top:0;bottom:0;width:0;border-left:1px solid #bbb}
+.sheet .rule-l{left:1in}.sheet .rule-r{right:.5in}
+.sheet .wm{position:absolute;right:.7in;bottom:.9in;width:1.3in;opacity:.07}
+.sheet .foot{position:absolute;left:0;right:0;bottom:.45in;text-align:center;font-size:8pt;color:#555}
+.sheet .inner{position:relative;padding:0 .12in 0 .12in}
+.cap{text-align:center;font-size:14pt;line-height:1.15}
+.cap .vs{margin:.06in 0}
+.title{text-align:center;font-weight:bold;font-size:14pt;margin:.1in 0 .06in}
+.kids{font-size:12pt;margin:0 0 .06in}
+table.ws{width:100%;border-collapse:collapse;table-layout:fixed}
+table.ws th,table.ws td{border:1px solid #000;padding:.5pt 4pt;vertical-align:top;line-height:1.08}
+table.ws th{text-align:center;font-weight:bold}
+table.ws td.n{width:.32in;text-align:center}
+table.ws td.m{width:1.05in;text-align:right;white-space:nowrap}
+.sheet.A table.ws{font-size:12pt}.sheet.B table.ws{font-size:10pt}
+.sheet.A .txt,.sheet.B .txt{font-size:12pt;margin-top:.07in}
+.sheet.B .txt{font-size:10pt}
+.sig{font-size:12pt;margin-top:.08in;line-height:1.15}
+.sig small{display:block;font-size:10pt}
+.src{font-size:9pt;margin-top:.06in}
+/* ---------- Self-test ---------- */
+details.tests{margin-top:14px;font-size:13px}
+details.tests summary{cursor:pointer;color:var(--navy);font-weight:600}
+.pass{color:#1d6b3a}.fail{color:var(--err);font-weight:700}
+footer.note{padding:0 24px 24px;color:#4a5160;font-size:13px}
+/* ---------- Print: only the sheet, black ink on legal paper ---------- */
+@page{size:8.5in 14in;margin:0}
+@media print{
+  body{background:#fff}
+  header.top,.panel,footer.note,.notice,.noprint{display:none!important}
+  main{display:block;padding:0}
+  .stage{padding:0;background:none;overflow:visible}
+  .stage .scale{transform:none!important;width:auto!important;height:auto!important}
+  .sheet{box-shadow:none;margin:0}
+}
+@media (prefers-reduced-motion:no-preference){.btn{transition:background .15s}}
+</style>
+</head>
+<body>
+<header class="top">
+  <!-- Office logo, copied from office-brand-package/logo-office.svg (brass line on Deep Navy) -->
+  <svg viewBox="-4 -4 120 120" fill="none" stroke="#B08D57" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M56 5 100 30v52L56 107 12 82V30z"/><path d="M56 26v50M42 82h28M32 38h48"/><circle cx="56" cy="26" r="4"/><path d="M32 38 24 60h16zM80 38 72 60h16z"/><path d="M24 60a8 8 0 0 0 16 0M72 60a8 8 0 0 0 16 0"/><circle cx="32" cy="38" r="3" fill="#B08D57"/><circle cx="80" cy="38" r="3" fill="#B08D57"/><path d="M56 70H44l-6 6M56 70h12l6 6"/><circle cx="38" cy="76" r="2.6" fill="#B08D57"/><circle cx="74" cy="76" r="2.6" fill="#B08D57"/><path d="M12 56H2M100 56h10M56 5V0M56 107v5"/></svg>
+  <div><h1>Louisiana child support worksheet</h1><p>Law Office of Paul A. Lemke III &middot; La. R.S. 9:315 et seq. &middot; Worksheets A and B</p></div>
+</header>
+
+<main>
+<section class="panel" aria-label="Case information">
+  <h2>Worksheet</h2>
+  <div class="seg" role="group" aria-label="Worksheet type">
+    <button type="button" id="btnA" aria-pressed="true"><span>Worksheet A</span><small>One domiciliary parent</small></button>
+    <button type="button" id="btnB" aria-pressed="false"><span>Worksheet B</span><small>Shared custody</small></button>
+  </div>
+  <p class="hint">Default is A. Use B only for shared custody (roughly equal time, 9:315.9).</p>
+
+  <h2>Case</h2>
+  <label for="court">Court</label><input id="court" value="7th Judicial District Court">
+  <div class="row3">
+    <div><label for="parish">Parish</label><select id="parish"><option>Catahoula</option><option>Concordia</option></select></div>
+    <div><label for="docket">Docket no.</label><input id="docket" inputmode="numeric"></div>
+    <div><label for="division">Division</label><input id="division" placeholder="optional"></div>
+  </div>
+  <div class="row">
+    <div><label for="pname">Petitioner</label><input id="pname" autocomplete="off"></div>
+    <div><label for="dname">Defendant</label><input id="dname" autocomplete="off"></div>
+  </div>
+
+  <h2>Children</h2>
+  <div id="kids"></div>
+  <div class="actions"><button type="button" class="btn alt" id="addKid">Add child</button></div>
+  <p class="hint">The 9:315.19 schedule covers 1 to 6 children.</p>
+
+  <h2>Custody</h2>
+  <div id="custA">
+    <label for="custodial">Domiciliary (custodial) parent</label>
+    <select id="custodial"><option value="defendant">Defendant</option><option value="petitioner">Petitioner</option></select>
+    <label for="days">Days a year the paying parent has the children (optional)</label>
+    <input id="days" inputmode="numeric" placeholder="e.g. 111">
+    <p class="hint">Over 73 days prints a reference figure only (9:315.8(E)). The credit is for the Court; the party asking bears the burden.</p>
+  </div>
+  <div id="custB" hidden>
+    <div class="row">
+      <div><label for="tp">Petitioner time %</label><input id="tp" inputmode="decimal" value="50"></div>
+      <div><label for="td">Defendant time %</label><input id="td" inputmode="decimal" value="50"></div>
+    </div>
+    <p class="hint">Must total 100.</p>
+  </div>
+
+  <h2>Monthly income</h2>
+  <div class="row">
+    <div><label for="pg">Petitioner gross</label><input id="pg" inputmode="decimal"></div>
+    <div><label for="dg">Defendant gross</label><input id="dg" inputmode="decimal"></div>
+    <div><label for="ppc">Petitioner preexisting child support (1a)</label><input id="ppc" inputmode="decimal"></div>
+    <div><label for="dpc">Defendant preexisting child support (1a)</label><input id="dpc" inputmode="decimal"></div>
+    <div><label for="pps">Petitioner preexisting spousal support (1b)</label><input id="pps" inputmode="decimal"></div>
+    <div><label for="dps">Defendant preexisting spousal support (1b)</label><input id="dps" inputmode="decimal"></div>
+  </div>
+  <p class="hint">All sources; for self-employment, gross receipts less ordinary and necessary expenses (9:315(C)(3)).</p>
+
+  <h2>Add-ons (monthly)</h2>
+  <div class="row">
+    <div><label for="a_cc">Net child care (9:315.3)</label><input id="a_cc" inputmode="decimal"></div>
+    <div><label for="a_hi">Child's health insurance (9:315.4)</label><input id="a_hi" inputmode="decimal"></div>
+    <div><label for="a_em">Extraordinary medical (9:315.5)</label><input id="a_em" inputmode="decimal"></div>
+    <div><label for="a_ee">Extraordinary expenses (9:315.6)</label><input id="a_ee" inputmode="decimal"></div>
+    <div><label for="a_adj">Adjustments, e.g. child's income (9:315.7)</label><input id="a_adj" inputmode="decimal"></div>
+  </div>
+
+  <h2>Direct payments</h2>
+  <div id="dpA"><label for="dp_pay">Paid directly by the noncustodial parent (Line 8)</label><input id="dp_pay" inputmode="decimal"></div>
+  <div id="dpB" hidden class="row">
+    <div><label for="dp_p">Petitioner (Line 12)</label><input id="dp_p" inputmode="decimal"></div>
+    <div><label for="dp_d">Defendant (Line 12)</label><input id="dp_d" inputmode="decimal"></div>
+  </div>
+
+  <h2>Comments, other, date</h2>
+  <label for="comments">Comments</label><textarea id="comments" rows="2"></textarea>
+  <label for="other">Other (stipulations, deviation reasons, matters for the Court)</label><textarea id="other" rows="2"></textarea>
+  <label for="date">Prepared date</label><input id="date" type="date">
+
+  <div class="actions">
+    <button type="button" class="btn brass" id="print">Print worksheet</button>
+    <button type="button" class="btn alt" id="clear">Clear form</button>
+  </div>
+  <p class="hint">Print opens the browser print dialog. Choose Save as PDF, paper size Legal, margins None, and turn off headers and footers. Nothing you type is saved or sent anywhere.</p>
+
+  <details class="tests"><summary>Self-test (known answers)</summary><div id="testOut"></div></details>
+</section>
+
+<section aria-label="Worksheet preview">
+  <div id="msgs"></div>
+  <div class="stage"><div class="scale" id="scale"><div id="sheetHost"></div></div></div>
+</section>
+</main>
+<footer class="note">Verify against current law before relying on this. Schedule: La. R.S. 9:315.19 as amended by Acts 2024, No. 86 (eff. 1/1/2025); 9:315.1 shows a 2026 amendment (Act 130). Rules last verified 2026-10-15 against legis.la.gov text in the Louisiana Law Reference. Percentages are rounded to two decimals and carried through the math (house choice, to be confirmed). Worksheet B Line 12 is entered as directed (to be confirmed).</footer>
+
+<script>
+/* ===================== RULES AS DATA: 9:315.19 schedule ===================== */
+const SCHEDULE = /*SCHEDULE_JSON*/null;
+
+/* ===================== CALCULATOR (integer cents; port of calc.py) ===================== */
+class NeedsLawyer extends Error {}
+// Half-up division for integers, symmetric for negatives (matches Decimal ROUND_HALF_UP).
+function divRound(n, d){ if (n < 0) return -divRound(-n, d); return Math.floor((2*n + d) / (2*d)); }
+function toCents(s){ if (s === "" || s == null) return 0; const v = parseFloat(String(s).replace(/[$,\s]/g,"")); return isFinite(v) ? Math.round(v*100) : 0; }
+function usd(c){ const neg = c < 0; c = Math.abs(c); const s = Math.floor(c/100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "." + String(c%100).padStart(2,"0"); return (neg?"-":"") + "$" + s; }
+function pctStr(h){ return (h/100).toFixed(2) + "%"; }   // h is hundredths of a percent
+
+// Basic obligation, 9:315.2(D), 9:315.19, 9:315.13. Straight-line between rows (9:315.13(B)).
+function scheduleLookup(incomeC, n){
+  const s = SCHEDULE;
+  if (n < 1 || n > 6) throw new NeedsLawyer("The 9:315.19 schedule runs from 1 to 6 children; the court sets support for " + n + " children.");
+  if (incomeC < s.min*100) throw new NeedsLawyer("Combined adjusted gross income (" + usd(incomeC) + ") is below the lowest schedule row ($" + s.min + "). Under 9:315.13(A) the court decides on actual earnings, the 9:315.11 factors and ability to pay.");
+  if (incomeC > s.max*100) throw new NeedsLawyer("Combined adjusted gross income (" + usd(incomeC) + ") exceeds the highest schedule row ($" + s.max + "). Under 9:315.13(C) the amount is in the court's discretion but not less than $" + s.rows[String(s.max)][n-1] + " for " + n + " child(ren).");
+  const stepC = s.step*100, base = Math.floor((incomeC - s.min*100)/stepC)*stepC + s.min*100;
+  const lowC = s.rows[String(base/100)][n-1]*100;
+  if (incomeC === base) return lowC;
+  const highC = s.rows[String(base/100 + s.step)][n-1]*100;
+  return lowC + divRound((highC - lowC)*(incomeC - base), stepC);
+}
+function shared(inp){
+  const r = {}, P = inp.p, D = inp.d;
+  r.l1 = {p:P.gross, d:D.gross}; r.l1a = {p:P.preChild, d:D.preChild}; r.l1b = {p:P.preSpousal, d:D.preSpousal};
+  r.l2 = {p:P.gross-P.preChild-P.preSpousal, d:D.gross-D.preChild-D.preSpousal};
+  r.l3 = r.l2.p + r.l2.d;
+  if (r.l3 <= 0) throw new NeedsLawyer("Combined adjusted gross income is zero or negative.");
+  r.l4 = {p:divRound(r.l2.p*10000, r.l3), d:divRound(r.l2.d*10000, r.l3)};   // hundredths of a percent
+  r.l5 = scheduleLookup(r.l3, inp.kids);
+  r.a = inp.add;
+  return r;
+}
+function worksheetA(inp){   // 9:315.8, 9:315.20
+  const r = shared(inp), a = r.a;
+  r.l6 = r.l5 + a.cc + a.hi + a.em + a.ee - a.adj;
+  r.l7 = {p:divRound(r.l4.p*r.l6, 10000), d:divRound(r.l4.d*r.l6, 10000)};
+  r.payor = inp.custodial === "petitioner" ? "d" : "p";
+  r.l8 = inp.dpPay; r.l9 = r.l7[r.payor] - r.l8; r.flags = [];
+  if (r.l9 < 0) r.flags.push("Line 9 is negative: direct payments exceed the payor's share.");
+  return r;
+}
+function worksheetB(inp){   // 9:315.9, 9:315.20
+  const r = shared(inp), a = r.a;
+  const tp = Math.round(inp.tp*100), td = Math.round(inp.td*100);   // hundredths of a percent
+  if (tp + td !== 10000) throw new NeedsLawyer("Time percentages must total 100 (got " + ((tp+td)/100) + ").");
+  r.l6 = divRound(r.l5*3, 2);                                       // 9:315.9(A)(2)
+  r.l7 = {p:divRound(r.l4.p*r.l6, 10000), d:divRound(r.l4.d*r.l6, 10000)};
+  r.l8 = {p:tp, d:td};
+  r.l9 = {p:divRound(r.l7.p*td, 10000), d:divRound(r.l7.d*tp, 10000)};
+  r.l10 = a.cc + a.hi + a.em + a.ee - a.adj;
+  r.l11 = {p:divRound(r.l4.p*r.l10, 10000), d:divRound(r.l4.d*r.l10, 10000)};
+  r.l12 = {p:inp.dpP, d:inp.dpD};
+  r.l13 = {p:r.l9.p + r.l11.p - r.l12.p, d:r.l9.d + r.l11.d - r.l12.d};
+  const diff = Math.abs(r.l13.p - r.l13.d);
+  r.payor = r.l13.p > r.l13.d ? "p" : (r.l13.d > r.l13.p ? "d" : null);
+  r.l14 = {p:r.payor==="p"?diff:null, d:r.payor==="d"?diff:null};
+  r.flags = [];
+  if (r.payor){                                                     // 9:315.9(A)(7) cap
+    const other = r.payor === "p" ? "defendant" : "petitioner";
+    r.cap = worksheetA(Object.assign({}, inp, {custodial:other, dpPay:0})).l7[r.payor];
+    if (diff > r.cap) r.flags.push("9:315.9(A)(7) cap: Line 14 (" + usd(diff) + ") exceeds what this parent would owe as a domiciliary-parent obligor on Worksheet A (" + usd(r.cap) + "). The amount owed may not be higher than the Worksheet A figure.");
+  }
+  return r;
+}
+
+/* ===================== FORM <-> INPUT ===================== */
+const $ = id => document.getElementById(id);
+let mode = "A";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function fmtDob(v){ const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v||""); return m ? m[2]+"/"+m[3]+"/"+m[1] : ""; }
+function fmtLong(v){ const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v||""); if(!m) return ""; const mo=["January","February","March","April","May","June","July","August","September","October","November","December"]; return mo[+m[2]-1]+" "+(+m[3])+", "+m[1]; }
+function readKids(){ return [...document.querySelectorAll(".child")].map(r => ({name:r.querySelector(".kn").value.trim(), dob:r.querySelector(".kd").value})); }
+function readForm(){
+  const kids = readKids();
+  return { p:{gross:toCents($("pg").value), preChild:toCents($("ppc").value), preSpousal:toCents($("pps").value)},
+           d:{gross:toCents($("dg").value), preChild:toCents($("dpc").value), preSpousal:toCents($("dps").value)},
+           kids:kids.length, kidList:kids, custodial:$("custodial").value,
+           tp:parseFloat($("tp").value)||0, td:parseFloat($("td").value)||0,
+           add:{cc:toCents($("a_cc").value), hi:toCents($("a_hi").value), em:toCents($("a_em").value), ee:toCents($("a_ee").value), adj:toCents($("a_adj").value)},
+           dpPay:toCents($("dp_pay").value), dpP:toCents($("dp_p").value), dpD:toCents($("dp_d").value) };
+}
+
+/* ===================== RENDER ===================== */
+function row(n, label, p, d, c){ return "<tr><td class='n'>"+n+"</td><td>"+label+"</td><td class='m'>"+p+"</td><td class='m'>"+d+"</td><td class='m'>"+c+"</td></tr>"; }
+function addonRows(a, plus){
+  return row("", "a. child care costs La. R.S. 9:315.3","","","+ "+usd(a.cc)) + row("", "b. child's health insurance premium cost La. R.S. 9:315.4","","","+ "+usd(a.hi)) +
+         row("", "c. extraordinary medical expenses (uninsured only; agreed to by parties or by court order) La. R.S. 9:315.5","","","+ "+usd(a.em)) +
+         row("", "d. extraordinary expenses (agreed to by parties or by court order) La. R.S. 9:315.6","","","+ "+usd(a.ee)) +
+         row("", "e. optional (extraordinary adjustments, e.g. child's income if applicable) La. R.S. 9:315.7","","","&ndash; "+usd(a.adj));
+}
+function baseRows(r){
+  return row("1","MONTHLY GROSS INCOME",usd(r.l1.p),usd(r.l1.d),"") +
+    row("","&nbsp;&nbsp;&nbsp;a. preexisting child support payment","&ndash; "+usd(r.l1a.p),"&ndash; "+usd(r.l1a.d),"") +
+    row("","&nbsp;&nbsp;&nbsp;b. preexisting spousal support payment","&ndash; "+usd(r.l1b.p),"&ndash; "+usd(r.l1b.d),"") +
+    row("2","MONTHLY ADJUSTED GROSS INCOME (Subtract 1a and 1b from Line 1)",usd(r.l2.p),usd(r.l2.d),"") +
+    row("3","COMBINED MONTHLY ADJUSTED GROSS INCOME (Add both columns of Line 2) La. R.S. 9:315.2(C)","","",usd(r.l3)) +
+    row("4","PERCENTAGE SHARE OF INCOME (Line 2 divided by Line 3) La. R.S. 9:315.2(C)",pctStr(r.l4.p),pctStr(r.l4.d),"") +
+    row("5","BASIC CHILD SUPPORT OBLIGATION (Compare Line 3 with Child Support Schedule) La. R.S. 9:315.2(D)","","",usd(r.l5));
+}
+function sheetHTML(f, r){
+  const pn = esc(f.pname || "PETITIONER").toUpperCase(), dn = esc(f.dname || "DEFENDANT").toUpperCase();
+  const kids = f.kidList.map(k => esc(k.name || "(name)") + (k.dob ? " (born " + fmtDob(k.dob) + ")" : "")).join("; ");
+  let body, comments = "";
+  if (mode === "A"){
+    body = baseRows(r) + addonRows(r.a) +
+      row("6","TOTAL CHILD SUPPORT OBLIGATION (Add Lines 5, 5a, 5b, 5c, &amp; 5d; Subtract Line 5e)","","",usd(r.l6)) +
+      row("7","EACH PARTY'S CHILD SUPPORT OBLIGATION (Multiply Line 4 by Line 6 for each party)",usd(r.l7.p),usd(r.l7.d),"") +
+      row("8","DIRECT PAYMENTS made by noncustodial parent on behalf of the child for child care costs, health insurance premiums, extraordinary medical expenses, or extraordinary expenses","","","&ndash; "+usd(r.l8)) +
+      row("9","RECOMMENDED CHILD SUPPORT ORDER (Subtract Line 8 from Line 7)","","",usd(r.l9));
+    const days = parseInt($("days").value, 10);
+    if (days > 73) comments += "Joint custody credit, La. R.S. 9:315.8(E): the party ordered to pay support has physical custody of the child(ren) for approximately " + days + " days per year (more than 73). Reference figure only: " + days + "/365 of Line 9 is " + usd(divRound(r.l9*days, 365)) + " per month. Whether to allow a credit, and in what amount, is for the Court; the party seeking the credit bears the burden of proof. ";
+  } else {
+    body = baseRows(r) +
+      row("6","SHARED CUSTODY BASIC OBLIGATION (Multiply Line 5 by 1.5) La. R.S. 9:315.9(A)(2)","","",usd(r.l6)) +
+      row("7","EACH PARTY'S THEORETICAL CHILD SUPPORT OBLIGATION (Multiply Line 4 by Line 6 for each party) La. R.S. 9:315.9(A)(2)",usd(r.l7.p),usd(r.l7.d),"") +
+      row("8","PERCENTAGE with each party (Use actual percentage of time if not 50%) La. R.S. 9:315.9(A)(3)",pctStr(r.l8.p),pctStr(r.l8.d),"") +
+      row("9","BASIC CHILD SUPPORT OBLIGATION FOR TIME WITH OTHER PARTY (Cross multiply Line 7 for each party by Line 8 for the other party) La. R.S. 9:315.9(A)(3)",usd(r.l9.p),usd(r.l9.d),"") +
+      addonRows(r.a) +
+      row("10","TOTAL EXPENSES/EXTRAORDINARY ADJUSTMENTS (Add Lines 9a, 9b, 9c, &amp; 9d; Subtract Line 9e)","","",usd(r.l10)) +
+      row("11","EACH PARTY'S PROPORTIONATE SHARE of expenses/extraordinary adjustments (Multiply Line 4 by Line 10) La. R.S. 9:315.9(A)(4)",usd(r.l11.p),usd(r.l11.d),"") +
+      row("12","DIRECT PAYMENTS made by either party on behalf of the child for child care costs, health insurance premiums, extraordinary medical expenses, or extraordinary expenses","&ndash; "+usd(r.l12.p),"&ndash; "+usd(r.l12.d),"") +
+      row("13","EACH PARTY'S CHILD SUPPORT OBLIGATION (Add Line 9 to Line 11; Subtract Line 12) La. R.S. 9:315.9(A)(4) &amp; (5)",usd(r.l13.p),usd(r.l13.d),"") +
+      row("14","RECOMMENDED CHILD SUPPORT ORDER (Subtract lesser amount from greater amount in Line 13) La. R.S. 9:315.9(A)(6)",r.l14.p==null?"":usd(r.l14.p),r.l14.d==null?"":usd(r.l14.d),"");
+  }
+  const userC = f.comments.trim();
+  const cText = (comments + esc(userC)).trim();
+  const logo = '<svg class="wm" viewBox="-4 -4 120 120" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M56 5 100 30v52L56 107 12 82V30z"/><path d="M56 26v50M42 82h28M32 38h48"/><circle cx="56" cy="26" r="4"/><path d="M32 38 24 60h16zM80 38 72 60h16z"/><path d="M24 60a8 8 0 0 0 16 0M72 60a8 8 0 0 0 16 0"/><circle cx="32" cy="38" r="3" fill="#000"/><circle cx="80" cy="38" r="3" fill="#000"/><path d="M56 70H44l-6 6M56 70h12l6 6"/><circle cx="38" cy="76" r="2.6" fill="#000"/><circle cx="74" cy="76" r="2.6" fill="#000"/><path d="M12 56H2M100 56h10M56 5V0M56 107v5"/></svg>';
+  return '<div class="sheet ' + mode + '"><div class="rule-l"></div><div class="rule-r"></div>' + logo +
+    '<div class="foot">Law Office of Paul A. Lemke III &middot; Attorney at Law &middot; P.O. Box 595, Harrisonburg, Louisiana 71340 &middot; 318-200-0641</div>' +
+    '<div class="inner"><div class="cap">' + esc(f.court).toUpperCase() + '<br>PARISH OF ' + esc(f.parish).toUpperCase() +
+    '<div class="vs">' + pn + '<br>VERSUS<br>' + dn + '</div>' +
+    'NO. ' + esc(f.docket) + (f.division.trim() ? '<br>DIVISION &ldquo;' + esc(f.division.trim()) + '&rdquo;' : '') + '</div>' +
+    '<div class="title">CHILD SUPPORT OBLIGATION WORKSHEET ' + mode + '</div>' +
+    '<div class="kids">Child(ren): ' + (kids || "(none entered)") + '</div>' +
+    '<table class="ws"><colgroup><col style="width:.32in"><col><col style="width:1.05in"><col style="width:1.05in"><col style="width:1.05in"></colgroup>' +
+    '<tr><th></th><th></th><th>Petitioner</th><th>Defendant</th><th>Combined</th></tr>' + body + '</table>' +
+    (cText ? '<div class="txt"><b>Comments:</b> ' + cText + '</div>' : '') +
+    '<div class="txt"><b>OTHER:</b> ' + (f.other.trim() ? esc(f.other.trim()) : "None.") + '</div>' +
+    '<div class="sig">Prepared by: ______________________________ &nbsp; Date: ' + esc(fmtLong(f.date)) +
+    '<small>Paul A. Lemke III (La. Bar No. 26382), Law Office of Paul A. Lemke III<br>P.O. Box 595, Harrisonburg, LA 71340 | Office: 1507 4th Street, Jonesville, LA 71343<br>318-200-0641 | paul@cialegalservices.com</small></div>' +
+    '<div class="src">Source of the child support schedule and calculations: Louisiana Revised Statutes, La. R.S. 9:315 et seq., including 9:315.19 (schedule) and 9:315.20 (worksheets), Louisiana Legislature website, legis.la.gov.</div>' +
+    '</div></div>';
+}
+function formVals(){ return {court:$("court").value, parish:$("parish").value, docket:$("docket").value, division:$("division").value, pname:$("pname").value, dname:$("dname").value, comments:$("comments").value, other:$("other").value, date:$("date").value, kidList:readKids()}; }
+
+function render(){
+  const inp = readForm(), f = formVals(), msgs = $("msgs"), host = $("sheetHost");
+  msgs.innerHTML = "";
+  const empty = !inp.p.gross && !inp.d.gross;
+  try {
+    if (empty) throw new NeedsLawyer("Enter both parties' monthly gross income to see the worksheet.");
+    const r = mode === "A" ? worksheetA(inp) : worksheetB(inp);
+    host.innerHTML = sheetHTML(f, r);
+    r.flags.forEach(t => msgs.insertAdjacentHTML("beforeend", "<div class='notice'>"+esc(t)+"</div>"));
+    const more = [];
+    if (!f.pname.trim() || !f.dname.trim()) more.push("Party names are blank; the caption prints PETITIONER and DEFENDANT.");
+    if (!f.docket.trim()) more.push("Docket number is blank.");
+    more.forEach(t => msgs.insertAdjacentHTML("beforeend", "<div class='notice'>"+esc(t)+"</div>"));
+    fit();
+  } catch (e) {
+    if (!(e instanceof NeedsLawyer)) throw e;
+    host.innerHTML = "";
+    msgs.innerHTML = "<div class='notice" + (empty ? "" : " err") + "'>" + esc(e.message) + "</div>";
+  }
+}
+// Scale the 8.5 in sheet down to fit the preview column on screen (print is unscaled).
+function fit(){
+  const stage = document.querySelector(".stage"), sc = $("scale"), sheet = document.querySelector(".sheet");
+  if (!sheet) return;
+  const avail = stage.clientWidth - 32, w = sheet.offsetWidth, k = Math.min(1, avail / w);
+  sc.style.transform = "scale(" + k + ")"; sc.style.width = w + "px"; sc.style.height = (sheet.offsetHeight * k) + "px";
+}
+window.addEventListener("resize", fit);
+
+/* ===================== UI WIRING ===================== */
+function setMode(m){
+  mode = m;
+  $("btnA").setAttribute("aria-pressed", m==="A"); $("btnB").setAttribute("aria-pressed", m==="B");
+  $("custA").hidden = m!=="A"; $("dpA").hidden = m!=="A"; $("custB").hidden = m!=="B"; $("dpB").hidden = m!=="B";
+  render();
+}
+function addKid(name, dob){
+  if (document.querySelectorAll(".child").length >= 6) return;
+  const d = document.createElement("div"); d.className = "child";
+  d.innerHTML = '<div><label>Name</label><input class="kn" autocomplete="off"></div><div><label>Date of birth</label><input class="kd" type="date"></div><button type="button" class="btn alt x" aria-label="Remove child">&times;</button>';
+  d.querySelector(".kn").value = name || ""; d.querySelector(".kd").value = dob || "";
+  d.querySelector("button").onclick = () => { if (document.querySelectorAll(".child").length > 1){ d.remove(); render(); } };
+  $("kids").appendChild(d);
+}
+$("btnA").onclick = () => setMode("A"); $("btnB").onclick = () => setMode("B");
+$("addKid").onclick = () => { addKid(); render(); };
+$("td").addEventListener("input", () => {});
+$("tp").addEventListener("input", () => { const v = parseFloat($("tp").value); if (isFinite(v)) $("td").value = +(100 - v).toFixed(2); });
+$("print").onclick = () => { if (!document.querySelector(".sheet")) { alert("Enter the income first so there is a worksheet to print."); return; } window.print(); };
+$("clear").onclick = () => { if (confirm("Clear everything on the form?")) { document.querySelectorAll("input:not(#court), textarea").forEach(e => e.value = ""); $("tp").value = 50; $("td").value = 50; $("kids").innerHTML = ""; addKid(); $("date").value = today(); render(); } };
+document.addEventListener("input", render);
+function today(){ const d = new Date(), p = n => String(n).padStart(2,"0"); return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate()); }
+addKid(); $("date").value = today(); render();
+
+/* ===================== SELF-TEST: known answers (hand-checked against calc.py) ===================== */
+function runTests(){
+  const out = [], base = {kids:3, custodial:"defendant", tp:60, td:40, dpPay:0, dpP:0, dpD:10000,
+    p:{gross:900000,preChild:0,preSpousal:0}, d:{gross:350000,preChild:0,preSpousal:0}, add:{cc:30000,hi:10000,em:0,ee:0,adj:0}};
+  const t = (name, got, want) => out.push("<div class='" + (got===want?"pass":"fail") + "'>" + (got===want?"PASS":"FAIL") + " " + name + ": " + got + (got===want?"":" (expected " + want + ")") + "</div>");
+  t("Schedule row $1,050, 1 child", usd(scheduleLookup(105000,1)), "$43.00");
+  t("Schedule midpoint $1,075, 1 child", usd(scheduleLookup(107500,1)), "$62.50");
+  t("Schedule $12,500, 3 children", usd(scheduleLookup(1250000,3)), "$2,847.00");
+  const a = worksheetA(Object.assign({}, base, {add:{cc:0,hi:0,em:0,ee:0,adj:0}}));
+  t("Worksheet A Line 7, John's 72%", usd(a.l7.p), "$2,049.84"); t("Worksheet A Line 9", usd(a.l9), "$2,049.84");
+  const b = worksheetB(base);
+  t("Worksheet B Line 6", usd(b.l6), "$4,270.50"); t("Worksheet B Line 9 (P/D)", usd(b.l9.p)+" / "+usd(b.l9.d), "$1,229.90 / $717.44");
+  t("Worksheet B Line 11 (P/D)", usd(b.l11.p)+" / "+usd(b.l11.d), "$288.00 / $112.00");
+  t("Worksheet B Line 14", usd(b.l14.p), "$788.46"); t("Worksheet B 9:315.9(A)(7) cap", usd(b.cap), "$2,337.84");
+  $("testOut").innerHTML = out.join("");
+}
+runTests();
+</script>
+</body>
+</html>
