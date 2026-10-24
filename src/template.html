@@ -18,8 +18,10 @@
 body{margin:0;background:var(--parchment);color:var(--ink);font:15px/1.45 var(--sans)}
 header.top{background:var(--navy);color:#fff;border-bottom:2px solid var(--brass);padding:14px 24px;display:flex;align-items:center;gap:16px}
 header.top svg{width:46px;height:46px;flex:none}
-header.top h1{font:600 22px/1.1 var(--serif);margin:0}
-header.top p{margin:2px 0 0;color:#c9cfdd;font-size:13px}
+header.top h1{font:600 22px/1.15 var(--serif);margin:0}
+header.top .sub{margin:4px 0 0;color:var(--brass);font:12px var(--mono);text-transform:uppercase;letter-spacing:.16em}
+header.top .tool{margin-left:auto;text-align:right;color:var(--slate);font:12px/1.5 var(--mono);text-transform:uppercase;letter-spacing:.1em}
+@media (max-width:640px){header.top .tool{display:none}header.top h1{font-size:18px}}
 main{display:grid;grid-template-columns:minmax(340px,430px) minmax(0,1fr);gap:24px;padding:20px 24px;align-items:start}
 @media (max-width:980px){main{grid-template-columns:minmax(0,1fr)}}
 main>section{min-width:0}
@@ -74,12 +76,36 @@ table.ws td.m{width:1.05in;text-align:right;white-space:nowrap}
 details.tests{margin-top:14px;font-size:13px}
 details.tests summary{cursor:pointer;color:var(--navy);font-weight:600}
 .pass{color:#1d6b3a}.fail{color:var(--err);font-weight:700}
-footer.note{padding:0 24px 24px;color:#4a5160;font-size:13px}
+footer.note{padding:0 24px 16px;color:#4a5160;font-size:13px}
+footer.brand{margin:0 24px;padding:14px 0 32px;border-top:2px solid var(--brass);text-align:center;font-size:12.5px;color:#4a5160}
+footer.brand b{font:600 14px var(--serif);color:var(--ink)}
+/* ---------- Dark mode (screen controls only; the sheet stays white like the printed page) ---------- */
+@media (prefers-color-scheme:dark){
+  :root{--parchment:#0A1020;--paper:#101a30;--ink:#ecebe7;--line:#26324d;--navy:#001633;--brass-dk:#c9a56b;--err:#ff9a9a}
+  label{color:#c4cada}
+  input,select,textarea{background:#0a1020;border-color:#33425f;color:var(--ink)}
+  .panel{border-top-color:var(--brass)}
+  .panel h2{color:var(--brass-dk)}
+  .seg{border-color:var(--brass)}
+  .seg button{background:#0a1020;color:#ecebe7}
+  .seg button small{color:#a9b0c2}
+  .seg button[aria-pressed=true]{background:var(--brass);color:#0a1020}
+  .seg button[aria-pressed=true] small{color:#1c2438}
+  .btn{background:var(--brass);border-color:var(--brass);color:#0a1020}
+  .btn.alt{background:transparent;color:var(--brass)}
+  .btn.brass{background:#7a5c2e;border-color:#7a5c2e;color:#fff}
+  .hint,footer.note,footer.brand{color:#a9b0c2}
+  .notice{background:#2a2412;color:#ecebe7}
+  .notice.err{background:#3a1a1a;color:var(--err)}
+  .stage{background:#16203a}
+  details.tests summary{color:var(--brass)}
+  .pass{color:#6fd18f}
+}
 /* ---------- Print: only the sheet, black ink on legal paper ---------- */
 @page{size:8.5in 14in;margin:0}
 @media print{
   body{background:#fff}
-  header.top,.panel,footer.note,.notice,.noprint{display:none!important}
+  header.top,.panel,footer.note,footer.brand,.notice,.noprint{display:none!important}
   main{display:block;padding:0}
   .stage{padding:0;background:none;overflow:visible}
   .stage .scale{transform:none!important;width:auto!important;height:auto!important}
@@ -92,7 +118,8 @@ footer.note{padding:0 24px 24px;color:#4a5160;font-size:13px}
 <header class="top">
   <!-- Office logo, copied from office-brand-package/logo-office.svg (brass line on Deep Navy) -->
   <svg viewBox="-4 -4 120 120" fill="none" stroke="#B08D57" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M56 5 100 30v52L56 107 12 82V30z"/><path d="M56 26v50M42 82h28M32 38h48"/><circle cx="56" cy="26" r="4"/><path d="M32 38 24 60h16zM80 38 72 60h16z"/><path d="M24 60a8 8 0 0 0 16 0M72 60a8 8 0 0 0 16 0"/><circle cx="32" cy="38" r="3" fill="#B08D57"/><circle cx="80" cy="38" r="3" fill="#B08D57"/><path d="M56 70H44l-6 6M56 70h12l6 6"/><circle cx="38" cy="76" r="2.6" fill="#B08D57"/><circle cx="74" cy="76" r="2.6" fill="#B08D57"/><path d="M12 56H2M100 56h10M56 5V0M56 107v5"/></svg>
-  <div><h1>Louisiana child support worksheet</h1><p>Law Office of Paul A. Lemke III &middot; La. R.S. 9:315 et seq. &middot; Worksheets A and B</p></div>
+  <div><h1>Law Office of Paul A. Lemke III</h1><div class="sub">Attorney at Law</div></div>
+  <div class="tool">Child Support Worksheet<br>La. R.S. 9:315 et seq. &middot; Worksheets A and B</div>
 </header>
 
 <main>
@@ -405,5 +432,6 @@ function runTests(){
 }
 runTests();
 </script>
+<footer class="brand"><b>Law Office of Paul A. Lemke III</b> &middot; Attorney at Law<br>P.O. Box 595, Harrisonburg, LA 71340 &middot; 318-200-0641 &middot; cialegalservices.com</footer>
 </body>
 </html>

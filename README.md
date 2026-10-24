@@ -3,7 +3,7 @@
 One HTML file that prepares a Louisiana child support guideline worksheet (A or B) and prints it on legal paper.
 
 ## Open it
-Double-click `26-10_App_ChildSupportWorksheet_v1.html`. It works offline and saves nothing: close the tab and the case data is gone.
+Double-click `26-10_App_ChildSupportWorksheet_v2.html`. It works offline and saves nothing: close the tab and the case data is gone.
 
 ## Use it
 1. Pick Worksheet A (one domiciliary parent, the default) or B (shared custody).
@@ -21,3 +21,6 @@ Not covered: split custody (run A once per parent), imputed income, deviation. T
 - Math matches the `child-support-worksheet` skill's `calc.py`; the Self-test panel checks known answers.
 
 Verify against current law before relying on it. Schedule last verified 2026-10-15.
+
+## Branding (v2, 2026-10-24)
+Matches the Plea Form Builder: navy header with the office name first and "Attorney at Law" beneath, tool name on the right, brass rule, parchment page, a footer with the PO Box, phone and website, and a dark mode for the screen controls. The worksheet sheet itself (white, Times New Roman, legal paper) and the print output did not change. v1 is kept as `26-10_App_ChildSupportWorksheet_v1.html`; backups of the template and README are in `backups/`.
